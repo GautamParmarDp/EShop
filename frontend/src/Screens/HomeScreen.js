@@ -22,7 +22,7 @@ function HomeScreen() {
       <h1>Latest products</h1>
       {loading ? <Loader />
         : error ? <Message variant='danger'>{error}</Message>
-          :
+          :(
           <Row>
             {products.map(product => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
@@ -30,6 +30,7 @@ function HomeScreen() {
               </Col>
             ))}
           </Row>
+          )
       }
     </div>
   )
