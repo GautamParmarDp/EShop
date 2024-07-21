@@ -20,7 +20,7 @@ function ProductScreen() {
 
     useEffect(() => {
         dispatch(listProductDetails(id))
-    }, [])
+    }, [dispatch])
 
     return (
         <div>
