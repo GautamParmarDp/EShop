@@ -1,4 +1,4 @@
-import {CARD_ADD_ITEM} from '../constants/cartConstants'
+import {CARD_ADD_ITEM , CARD_REMOVE_ITEM} from '../constants/cartConstants'
 var Items= localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
 export const cartReducer = (state={cartItems:Items},action)=>{
 
@@ -18,6 +18,13 @@ export const cartReducer = (state={cartItems:Items},action)=>{
                     cartItems:[...state.cartItems,item] 
                 }
             }
+
+        case CARD_REMOVE_ITEM:
+            return{
+                ...state,
+                cartItems:state.cartItems.filter(x => x.product != action.payload)
+            }
+
         default:
             return state
     }
