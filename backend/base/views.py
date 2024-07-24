@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Product
 # from .products import products
-from .serializer import ProductSerializer
+from .serializer import ProductSerializer , UserSerializer
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -58,6 +58,15 @@ def getRoutes(request):
     ]
 
     return Response(routes)
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user 
+    # usually in Django when user is LoggedIn using default authentication system we can get that user using request.user
+    # But here we are using API decorator so request.user gives us the user data from the Token
+    
+    serializer=UserSerializer(user,many=False) #we are serializing Many objects so it is T rue
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def getProducts(request):
