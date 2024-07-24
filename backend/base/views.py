@@ -7,6 +7,40 @@ from .models import Product
 # from .products import products
 from .serializer import ProductSerializer
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    # # Learned How to add custom user data within our Encoded Token
+    # @classmethod
+    # def get_token(cls, user):
+    #     token = super().get_token(user)
+
+    #     # Add custom claims
+    #     token['username'] = user.username
+    #     token['message'] = 'Testing..'
+    #     # ...
+
+    #     return token
+
+    # Learned How to add custom user data(Not encoded) in respone along with Encoded Token
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # refresh = self.get_token(self.user)
+
+        # data["refresh"] = str(refresh)
+        # data["access"] = str(refresh.access_token)
+
+        data["username"] = self.user.username
+        data["email"] = self.user.email
+
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 # Create your views here.
 @api_view(['GET'])
 def getRoutes(request):
