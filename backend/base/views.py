@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view , permission_classes
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from .models import Product
+from django.contrib.auth.models import User #default user model
+
 # from .products import products
 from .serializer import ProductSerializer , UserSerializer ,UserSerializerWithToken
 
@@ -38,7 +41,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         serializer = UserSerializerWithToken(self.user).data
         for k,v in serializer.items():
             data[k] = v
-            
+
         return data
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -63,12 +66,20 @@ def getRoutes(request):
     return Response(routes)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getUserProfile(request):
     user = request.user 
     # usually in Django when user is LoggedIn using default authentication system we can get that user using request.user
     # But here we are using API decorator so request.user gives us the user data from the Token
     
     serializer=UserSerializer(user,many=False) #we are serializing Many objects so it is T rue
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()
+    serializer=UserSerializer(users,many=True) #we are serializing Many objects so it is T rue
     return Response(serializer.data)
 
 @api_view(['GET'])
