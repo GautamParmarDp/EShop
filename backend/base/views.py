@@ -13,6 +13,9 @@ from .serializer import ProductSerializer , UserSerializer ,UserSerializerWithTo
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     # # Learned How to add custom user data within our Encoded Token
@@ -46,6 +49,24 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data 
+    # print("data : ",data)
+    try:
+        user = User.objects.create(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password']),
+
+        )
+        serializer = UserSerializerWithToken(user,many=False)
+        return Response(serializer.data)
+    except:
+        message={'detail':'User with this emial already exists'}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 # Create your views here.
 @api_view(['GET'])
