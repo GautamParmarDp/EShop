@@ -8,14 +8,10 @@ import ProductScreen from './Screens/ProductScreen'
 import CartScreen from "./Screens/CartScreen"
 import LoginScreen from "./Screens/LoginScreen"
 
-import { createBrowserHistory } from 'history';
-
 function App() {
-  // const history = createBrowserHistory();
-  const history = createBrowserHistory();
 
   return (
-    <Router history={history}>
+    <Router>
       <Header />
       <main className="py-5">
         <Container>

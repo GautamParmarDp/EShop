@@ -8,10 +8,10 @@ import { listProductDetails } from '../actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
 
 // import products from '../products'
-
+import {useNavigate} from 'react-router-dom'
 
 function ProductScreen() {
     const [qty,setQty] = useState(1)
@@ -19,8 +19,8 @@ function ProductScreen() {
     const { id } = useParams()
     // const product = products.find((p) => p._id == id)
     // const history = createBrowserHistory()
-    const history = createBrowserHistory({ forceRefresh: true });
-
+    // const history = createBrowserHistory({ forceRefresh: true });
+    const history = useNavigate()
     const dispatch = useDispatch()
     const productDetails = useSelector(state => state.productDetails)
     const { loading, error, product } = productDetails
@@ -31,8 +31,9 @@ function ProductScreen() {
 
     const addToCartHandler = ()=>{
         // console.log("Add to cart",id);
-        history.push(`/cart/${id}?qty=${qty}`)
-        history.go(`/cart/${id}?qty=${qty}`)
+        // history.push(`/cart/${id}?qty=${qty}`)
+        // history.go(`/cart/${id}?qty=${qty}`)
+        history(`/cart/${id}?qty=${qty}`)
     }
 
     return (

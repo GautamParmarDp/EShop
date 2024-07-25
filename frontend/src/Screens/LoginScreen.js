@@ -6,7 +6,8 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import { login } from '../actions/userActions'
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
+import {useNavigate} from 'react-router-dom'
 
 
 
@@ -22,11 +23,13 @@ function LoginScreen() {
   const userlogin = useSelector(state => state.userLogin)
   const {laoding,error,userInfo} = userlogin
 
-  const history = createBrowserHistory({ forceRefresh: true });
+  // const history = createBrowserHistory({ forceRefresh: true });
+  const history = useNavigate();
   useEffect( () => {
     if(userInfo){
-        history.push(redirect)
-        history.go(redirect)
+        // history.push(redirect)
+        // history.go(redirect)
+        history(redirect)
     }
   },[history,userInfo,redirect])
 

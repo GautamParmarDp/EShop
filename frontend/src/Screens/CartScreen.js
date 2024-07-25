@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Button, Card, Image, Form } from 'react-bootstrap'
 import Message from '../components/Message'
 import { addToCart , reomveFromCart} from '../actions/cartActions'
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
+import {useNavigate} from 'react-router-dom'
+
 
 function CartScreen() {
     let productId = useParams()
@@ -22,7 +24,9 @@ function CartScreen() {
     const cart = useSelector(state => state.cart)
     const { cartItems } = cart
     // console.log('cartItems:',cartItems)
-    const history = createBrowserHistory({ forceRefresh: true });
+    // const history = createBrowserHistory({ forceRefresh: true });
+    const history = useNavigate();
+
     useEffect(() => {
         if (productId) {
             dispatch(addToCart(productId, qty))
@@ -35,8 +39,9 @@ function CartScreen() {
     }
 
     const checkoutHandler =() => {
-        history.push('/login?redirect=shipping')
-        history.go('/login?redirect=shipping')
+        // history.push('/login?redirect=shipping')
+        // history.go('/login?redirect=shipping')
+        history('/login?redirect=shipping')
     }
 
     return (

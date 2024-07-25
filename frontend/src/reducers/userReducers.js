@@ -1,8 +1,8 @@
 import {USER_LOGIN_REQUEST , USER_LOGIN_SUCCESS , USER_LOGIN_FAIL , USER_LOGOUT} from '../constants/userConstants'
 
-var user= localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
+var userr= localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
 
-export const userLoginReducer = (state ={userInfo:user},action)=>{
+export const userLoginReducer = (state ={userInfo:userr},action)=>{
 
     switch(action.type){
         case USER_LOGIN_REQUEST:
