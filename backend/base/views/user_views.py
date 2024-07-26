@@ -71,6 +71,23 @@ def getUserProfile(request):
     serializer=UserSerializer(user,many=False) #we are serializing Many objects so it is T rue
     return Response(serializer.data)
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    user = request.user #got the user obj from the token that was sent
+    serializer=UserSerializerWithToken(user,many=False) #we are serializing one object so it is False
+
+    #user updated in the database using data from the request and saved
+    data = request.data
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+    if data['password']!='' :
+        user.password = make_password(data['password'])
+    user.save()
+    
+    return Response(serializer.data)
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getUsers(request):
