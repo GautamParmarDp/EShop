@@ -14,6 +14,11 @@ import {
     USER_DETAILS_SUCCESS ,
     USER_DETAILS_FAIL ,
 
+    USER_UPDATE_PROFILE_REQUEST ,
+    USER_UPDATE_PROFILE_SUCCESS ,
+    USER_UPDATE_PROFILE_FAIL ,
+    USER_UPDATE_PROFILE_RESET ,
+
 } from '../constants/userConstants'
 import { json } from 'react-router-dom'
 
@@ -88,6 +93,37 @@ export const getUserDetails = (id) => async(dispatch,getState) => {
     catch(error){
         dispatch( { 
             type:USER_DETAILS_FAIL , 
+            payload:error.response && error.response.data.detail 
+            ?error.response.data.detail
+            :error.message,
+        })
+    }
+}
+
+export const updateUserProfile = (user) => async(dispatch,getState) => {
+    try{
+        dispatch({ type:USER_UPDATE_PROFILE_REQUEST })
+
+        const{ userLogin:{userInfo} } = getState() //user should be authenticated to update the details to the path /api/users/profile/update/ so we are fetching token of loggedIn user and sending it in headers
+
+        const config = {
+            headers:{ 
+                'Content-type':'application/json' ,
+                Authorization :`Bearer ${userInfo.token}`
+            }
+        }
+        const {data} = await axios.put(`/api/users/profile/update/`, user ,config )
+        dispatch({ type:USER_UPDATE_PROFILE_SUCCESS, payload: data }) 
+
+        //once user update successfull we want to logIn the user with new updated user details so we trigger USER_LOGIN_SUCCESS again for state data and also update our local storage as well
+        dispatch({ type:USER_LOGIN_SUCCESS , payload: data })
+
+        localStorage.setItem('userInfo',JSON.stringify(data))
+
+    }
+    catch(error){
+        dispatch( { 
+            type:USER_UPDATE_PROFILE_FAIL , 
             payload:error.response && error.response.data.detail 
             ?error.response.data.detail
             :error.message,

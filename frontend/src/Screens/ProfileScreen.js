@@ -4,8 +4,9 @@ import { Form, Row, Col, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails , updateUserProfile } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
+import {USER_UPDATE_PROFILE_RESET} from '../constants/userConstants'
 
 function ProfileScreen() {
     const [name, setName] = useState('')
@@ -25,6 +26,11 @@ function ProfileScreen() {
     const { userInfo } = userLogin
 
     const history = useNavigate();
+
+    //userEffect should know about updateUserProfile updating the userUpdateProfile state 
+    const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+    const { success } = userUpdateProfile
+
     useEffect(() => {
         if (!userInfo) {
             // history.push(redirect)
@@ -32,15 +38,16 @@ function ProfileScreen() {
             history('/login') //if user not logged in then we redirect him to this page
         }
         else {
-            if (!user || !user.name) {
-                dispatch(getUserDetails('profile'))
+            if ( !user || !user.name || success) {
+                dispatch({ type: USER_UPDATE_PROFILE_RESET}) //if success is true means user updated then we reset the user state and..
+                dispatch(getUserDetails('profile')) //..fetch current_user/updated_user details 
             }
             else {
                 setName(user.name)
                 setEmail(user.email)
             }
         }
-    }, [dispatch, history, userInfo, user])
+    }, [dispatch, history, userInfo, user , success]) //we gonna listen to all this dependancy and see if this part of state changes 
 
 
 
@@ -51,7 +58,14 @@ function ProfileScreen() {
             setMessage('Passwords do not match.')
         }
         else {
-            console.log('Updating profile')
+            // console.log('Updating profile')
+            dispatch(updateUserProfile({
+                'id' : user._id ,
+                'name': name ,
+                'email' : email ,
+                'password' : password
+            }))
+            setMessage('')
         }
     }
 
