@@ -7,9 +7,13 @@ import {
 
     CART_SAVE_PAYMENT_METHOD,
 
+    CART_CLEAR_ITEM,
+
 } from '../constants/cartConstants'
 var Items = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
-export const cartReducer = (state = { cartItems: Items, shippingAddress: {} }, action) => {
+var shippingAddress = localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : []
+
+export const cartReducer = (state = { cartItems: Items, shippingAddress: shippingAddress }, action) => {
 
     switch (action.type) {
         case CARD_ADD_ITEM:
@@ -42,6 +46,12 @@ export const cartReducer = (state = { cartItems: Items, shippingAddress: {} }, a
             return {
                 ...state,
                 paymentMethod: action.payload
+            }
+        
+        case CART_CLEAR_ITEM:
+            return{
+                ...state,
+                cartItems:[]
             }
         default:
             return state
