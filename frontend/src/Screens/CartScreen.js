@@ -41,7 +41,9 @@ function CartScreen() {
     const checkoutHandler =() => {
         // history.push('/login?redirect=shipping')
         // history.go('/login?redirect=shipping')
+
         history('/login?redirect=shipping')
+        history('/shipping')
     }
 
     return (

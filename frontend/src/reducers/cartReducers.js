@@ -1,6 +1,7 @@
-import {CARD_ADD_ITEM , CARD_REMOVE_ITEM} from '../constants/cartConstants'
+import { saveShippingAddress } from '../actions/cartActions'
+import {CARD_ADD_ITEM , CARD_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS} from '../constants/cartConstants'
 var Items= localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
-export const cartReducer = (state={cartItems:Items},action)=>{
+export const cartReducer = (state={ cartItems:Items , shippingAddress:{} },action)=>{
 
     switch(action.type){
         case CARD_ADD_ITEM:
@@ -24,7 +25,11 @@ export const cartReducer = (state={cartItems:Items},action)=>{
                 ...state,
                 cartItems:state.cartItems.filter(x => x.product != action.payload)
             }
-
+        case CART_SAVE_SHIPPING_ADDRESS:
+            return{
+                ...state,
+                shippingAddress:action.payload
+            }
         default:
             return state
     }
