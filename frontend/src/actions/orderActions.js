@@ -7,6 +7,11 @@ import {
     ORDER_DETAILS_REQUEST,
     ORDER_DETAILS_SUCCESS,
     ORDER_DETAILS_FAIL,
+    
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET,
 
 } from '../constants/orderConstants'
 
@@ -56,6 +61,31 @@ export const getOrderDetails = (id) => async(dispatch,getState) => {
     catch(error){
         dispatch( { 
             type:ORDER_DETAILS_FAIL , 
+            payload:error.response && error.response.data.detail 
+            ?error.response.data.detail
+            :error.message,
+        })
+    }
+}
+
+//paymentResult will be from PayPal when we integrate that
+export const payOrder = (id,paymentResult) => async(dispatch,getState) => {
+    try{
+        dispatch({ type:ORDER_PAY_REQUEST })
+
+        const{ userLogin:{userInfo} } = getState() //user should be authenticated(loggedIn) to do the payment for order from the path /api/orders/<id>/pay so we are fetching token of loggedIn user and sending it in headers
+        const config = {
+            headers:{ 
+                'Content-type':'application/json' ,
+                Authorization :`Bearer ${userInfo.token}`
+            }
+        }
+        const {data} = await axios.put(`/api/orders/${id}/pay/`, paymentResult ,config )
+        dispatch({ type:ORDER_PAY_SUCCESS, payload: data }) 
+    }
+    catch(error){
+        dispatch( { 
+            type:ORDER_PAY_FAIL , 
             payload:error.response && error.response.data.detail 
             ?error.response.data.detail
             :error.message,
