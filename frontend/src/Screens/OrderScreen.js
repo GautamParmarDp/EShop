@@ -26,7 +26,7 @@ function OrderScreen() {
         if (!order || order._id !== Number(orderId)) { //if we dont have order or order with that id than we dispatch it
             dispatch(getOrderDetails(orderId))
         }
-    }, [order, orderId])  //added dependancies means it will change when order or orderId changes
+    }, [dispatch ,order, orderId])  //added dependancies means it will change when order or orderId changes
 
     return loading ? (
         <Loader />
