@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getOrderDetails } from '../actions/orderActions'
-
+import { getOrderDetails, payOrder } from '../actions/orderActions'
+import {PayPalButton} from 'react-paypal-button-v2'
+import {ORDER_PAY_RESET} from '../constants/orderConstants'
 
 function OrderScreen() {
 
@@ -15,6 +16,9 @@ function OrderScreen() {
     const orderDetails = useSelector(state => state.orderDetails)
     const { loading, order, error } = orderDetails
 
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay //loadingPay cousom name given bcz loading already exist for above
+
     const dispatch = useDispatch()
     const history = useNavigate();
 
@@ -22,11 +26,55 @@ function OrderScreen() {
         order.itemPrice = order.orderItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2)
     }
 
-    useEffect(() => {
-        if (!order || order._id !== Number(orderId)) { //if we dont have order or order with that id than we dispatch it
-            dispatch(getOrderDetails(orderId))
+    const [sdkReady, setSdkReady] = useState(false)
+    //default val is false means that our software dev kit is not ready for paypal.
+    // Once we load script addPayPalScript() then we are ready for paypal
+    // put clientId in .env file later
+    const addPayPalScript = () => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AftWJqvC2ENh_NDI4TGKXkK8IJLmqi_feJ5i8xGLlrQvf1a8pWHEC2td-ovnWBiAQDiDwpIsaHBFyj9g'
+        script.async = true
+        script.onload = () => {
+            setSdkReady(true)
         }
-    }, [dispatch ,order, orderId])  //added dependancies means it will change when order or orderId changes
+        document.body.appendChild(script) //appending the script once its ready
+    }
+
+    useEffect(() => {
+        if (!order || successPay || order._id !== Number(orderId)) { //if we dont have order or order with that id than we dispatch it
+            dispatch({type:ORDER_PAY_RESET})
+            console.log('ORDER_PAY_RESET ')
+            
+            dispatch(getOrderDetails(orderId))
+            console.log('getOrderDetails ')
+
+
+        }
+        else if (!order.isPaid) {
+            if (!window.paypal) {
+                addPayPalScript()
+                console.log('addPayPalScript ')
+
+            }
+            else {
+                setSdkReady(true)
+                console.log('setSdkReady true')
+
+            }
+        }
+    }, [dispatch, order, orderId, successPay])  //added dependancies means it will change when order or orderId changes
+
+    const successPaymentHandler = (paymentResult) => {
+        console.log('inside successPaymentHandler')
+        console.log('paymentResult: ', paymentResult)
+        console.log('orderId: ', orderId)
+        
+        dispatch(payOrder(orderId,paymentResult))
+        // dispatch(payOrder(orderId, paymentResult))
+        console.log('payOrder')
+
+    }
 
     return loading ? (
         <Loader />
@@ -52,9 +100,9 @@ function OrderScreen() {
                             {
                                 order.isDelivered ? (
                                     <Message variant='success'>Delivered on {order.deliveredAt}</Message>
-                                    ) : (
-                                        <Message variant='warning'>Not Delivered</Message>
-                                        )
+                                ) : (
+                                    <Message variant='warning'>Not Delivered</Message>
+                                )
                             }
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -66,9 +114,9 @@ function OrderScreen() {
                             {
                                 order.isPaid ? (
                                     <Message variant='success'>Paid on {order.paidAt}</Message>
-                                    ) : (
-                                        <Message variant='warning'>Not Paid</Message>
-                                        )
+                                ) : (
+                                    <Message variant='warning'>Not Paid</Message>
+                                )
                             }
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -134,14 +182,32 @@ function OrderScreen() {
                                 </Row>
                             </ListGroup.Item>
 
-                        </ListGroup>
+                            {!order.isPaid && ( //if order not paid then only show rest
+                                <ListGroup.Item>
+                                    { loadingPay && <Loader/> }
+                                    { !sdkReady ? ( //paypal sdk ready false means not loaded then show loader. 
+                                        <Loader />
+                                        ) : (  ////paypal sdk ready true means loaded then show paypal button.
+                                            <PayPalButton 
+                                                amount={order.totalPrice}
+                                                onSuccess={successPaymentHandler}
+                                            />
+                                            )
+                                    }
+                                </ListGroup.Item>
+
+
+                                ) 
+                            }
+
+                                </ListGroup>
                     </Card>
 
                 </Col>
             </Row>
 
         </div>
-        )
+    )
 }
 
 export default OrderScreen
