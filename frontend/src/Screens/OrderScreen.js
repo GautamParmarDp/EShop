@@ -6,6 +6,7 @@ import Loader from '../components/Loader'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getOrderDetails, payOrder } from '../actions/orderActions'
 import {PayPalButton} from 'react-paypal-button-v2'
+// import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import {ORDER_PAY_RESET} from '../constants/orderConstants'
 
 function OrderScreen() {
