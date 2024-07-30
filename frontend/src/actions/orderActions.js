@@ -13,6 +13,12 @@ import {
     ORDER_PAY_FAIL,
     ORDER_PAY_RESET,
 
+    ORDER_LIST_MY_REQUEST,
+    ORDER_LIST_MY_SUCCESS,
+    ORDER_LIST_MY_FAIL,
+    ORDER_LIST_MY_RESET,
+
+
 } from '../constants/orderConstants'
 
 import {CART_CLEAR_ITEM} from '../constants/cartConstants'
@@ -94,6 +100,30 @@ export const payOrder = (id,paymentResult) => async(dispatch,getState) => {
 
         dispatch( { 
             type:ORDER_PAY_FAIL , 
+            payload:error.response && error.response.data.detail 
+            ?error.response.data.detail
+            :error.message,
+        })
+    }
+}
+
+export const listMyOrders = () => async(dispatch,getState) => {
+    try{
+        dispatch({ type:ORDER_LIST_MY_REQUEST })
+
+        const{ userLogin:{userInfo} } = getState() //user should be authenticated(loggedIn) to get the order from the path /api/orders/<id>/ so we are fetching token of loggedIn user and sending it in headers
+        const config = {
+            headers:{ 
+                'Content-type':'application/json' ,
+                Authorization :`Bearer ${userInfo.token}`
+            }
+        }
+        const {data} = await axios.get(`/api/orders/myorders/` ,config )
+        dispatch({ type:ORDER_LIST_MY_SUCCESS, payload: data }) 
+    }
+    catch(error){
+        dispatch( { 
+            type:ORDER_LIST_MY_FAIL , 
             payload:error.response && error.response.data.detail 
             ?error.response.data.detail
             :error.message,
