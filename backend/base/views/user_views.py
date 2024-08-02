@@ -95,6 +95,29 @@ def getUsers(request): #Admin can see all users
     serializer=UserSerializer(users,many=True) #we are serializing Many objects so it is T rue
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUserById(request,pk): #Admin can get user details by id
+    user = User.objects.get(id=pk)
+    serializer=UserSerializer(user,many=False) #we are serializing One object so it is False
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateUser(request,pk): #Admin can update user details that he gets from id
+    user = User.objects.get(id=pk)
+
+    #user updated in the database using data from the request and saved
+    data = request.data
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+    user.is_staff = data['isAdmin']
+    user.save()
+    
+    serializer=UserSerializer(user,many=False) #we are serializing user after its updated 
+    return Response(serializer.data)
+
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
 def deleteUser(request,pk): #Admin can delte user
