@@ -90,7 +90,7 @@ def updateUserProfile(request):
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
-def getUsers(request):
+def getUsers(request): #Admin can see all users
     users = User.objects.all()
     serializer=UserSerializer(users,many=True) #we are serializing Many objects so it is T rue
     return Response(serializer.data)
