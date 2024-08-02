@@ -44,7 +44,7 @@ function ProfileScreen() {
             history('/login') //if user not logged in then we redirect him to this page
         }
         else {
-            if ( !user || !user.name || success) {
+            if ( !user || !user.name || success || userInfo._id !== user._id) {
                 dispatch({ type: USER_UPDATE_PROFILE_RESET}) //if success is true means user updated then we reset the user state and..
                 dispatch(getUserDetails('profile')) //..fetch current_user/updated_user details 
                 dispatch(listMyOrders())
