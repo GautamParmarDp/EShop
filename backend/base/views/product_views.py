@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
-from base.models import Product
+from base.models import Product , Review
 # from .products import products
 from base.serializer import ProductSerializer
 from rest_framework import status
@@ -76,3 +76,41 @@ def uploadImage(request):
     product.save()
 
     return Response('Image uploaded')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request,pk):
+    user=request.user
+    product = Product.objects.get(_id=pk)
+    data=request.data
+
+    #1. review already exists
+    alreadyExists = product.review_set.filter(user=user).exists() #return true if product review is already filled by user
+    if alreadyExists:
+        content = {'details':'Product already reviewed'}
+        return Response( content , status=status.HTTP_400_BAD_REQUEST )
+    #2. No rating or 0 
+    elif data['rating'] == 0:
+        content = {'details':'Please select a rating'}
+        return Response( content , status=status.HTTP_400_BAD_REQUEST )
+    else:
+        review = Review.objects.create(
+                    user=user,
+                    product=product,
+                    name=user.first_name,
+                    rating=data['rating'], 
+                    comment=data['comment'],
+                )
+        #get all Reviews in queryset after new review is created and update (numReviews,rating) in product model 
+        allReviews = product.review_set.all() 
+        product.numReviews = len(allReviews) #numReviews updated in product model
+
+        total = 0
+        for i in allReviews:
+            total = total + i.rating
+        product.rating = total/len(allReviews) #rating updated in product model
+        product.save()
+
+        return Response('Review added')
+
+    #3. create review
