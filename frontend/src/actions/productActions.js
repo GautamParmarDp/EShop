@@ -26,11 +26,12 @@ import {
     PRODUCT_CREATE_REVIEW_FAIL,
 } from '../constants/productConstants'
 
-export const listProducts = ()=> async (dispatch) => {
+// (keyword='') bydefault incase we dont have keyword then keeping it empty string, else whatever string we get from HomeScreen =>dispatch(listProducts(keyword))
+export const listProducts = (keyword='')=> async (dispatch) => {
     try{
         dispatch( { type:PRODUCT_LIST_REQUEST })
         
-        const { data } = await axios.get('/api/products/')
+        const { data } = await axios.get(`/api/products${keyword}`)
 
         dispatch( { type:PRODUCT_LIST_SUCCESS , payload:data })
     }

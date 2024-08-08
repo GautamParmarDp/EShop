@@ -10,6 +10,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../actions/userActions'
+import SearchBox from './SearchBox'
 
 function Header() {
 
@@ -32,6 +33,7 @@ function Header() {
             </LinkContainer>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
+              <SearchBox />
               <Nav className="mr-auto">
                 <LinkContainer to="/cart">
                   <Nav.Link ><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>

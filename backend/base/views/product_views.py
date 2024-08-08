@@ -9,7 +9,13 @@ from rest_framework import status
 
 @api_view(['GET'])
 def getProducts(request):
-    products = Product.objects.all()
+    query = request.query_params.get('keyword') #whatever we are searching in searchBox that querytext comes here
+    # print('query:',query)
+    if query == None:
+        query = ''
+    
+    # icontains=> case insensitive search
+    products = Product.objects.filter( name__icontains=query )
     serializer=ProductSerializer(products,many=True) #we are serializing Many objects so it is T rue
     return Response(serializer.data)
 
