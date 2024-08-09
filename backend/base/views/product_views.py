@@ -20,6 +20,12 @@ def getProducts(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+def getTopProducts(request): # for carousel
+    products = Product.objects.filter(rating__gte=4).order_by('-rating')[0:5] #highest to lowest raing vise(>=4) top 5 product
+    serializer=ProductSerializer(products,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def getProduct(request,pk):
     # product=[]
     # for i in products:

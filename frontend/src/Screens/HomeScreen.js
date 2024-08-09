@@ -6,6 +6,7 @@ import Product from '../components/Product'
 import { listProducts } from '../actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import ProductCarousel from '../components/ProductCarousel'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 
@@ -25,6 +26,7 @@ function HomeScreen() {
 
   return (
     <div>
+      {!keyword && <ProductCarousel />}
       <h1>Latest products</h1>
       {loading ? <Loader />
         : error ? <Message variant='danger'>{error}</Message>
