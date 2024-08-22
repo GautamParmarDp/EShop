@@ -1,0 +1,103 @@
+///////////////Project start from scratch///////////////
+-----------------------
+Install package.json dependancies using npm pkg in below path first 
+(wherever the package.json file is there go there)
+C:\Users\Lucifer\Desktop\Job Practice\ecommerce\EShop\frontend> 
+then 
+npm install
+then
+npm start
+-----------------------
+create virtual env
+
+C:\Users\Lucifer\Desktop\Job Practice\ecommerce> pip install virtualenv
+C:\Users\Lucifer\Desktop\Job Practice\ecommerce> virtualenv myenv
+C:\Users\Lucifer\Desktop\Job Practice\ecommerce> myenv\scripts\activate
+
+activate virtual env for backend
+C:\Users\Lucifer\Desktop\Job Practice\ecommerce\EShop> .\myenv\Scripts\activate
+
+(myenv) PS C:\Users\Lucifer\Desktop\Job Practice\ecommerce\EShop\backend> python .\manage.py runserver   
+-----------------------
+A common convention is to put this list in a requirements.txt file:
+python -m pip freeze 
+will produce a similar list of the installed packages, but the output uses the format that 
+python -m pip install 
+expects. 
+
+(myenv) PS C:\Users\Lucifer\Desktop\Job Practice\ecommerce\EShop\backend> python -m pip freeze > requirements.txt
+
+The requirements.txt can then be committed to version control and shipped as part of an application. Users can then install all the necessary packages with install -r:
+
+(myenv) PS C:\Users\Lucifer\Desktop\Job Practice\ecommerce\EShop\backend> python -m pip install -r requirements.txt
+-----------------------
+////////////////////////////////////////////////////////
+
+????????????????????????????????????????????????????????????????????????
+4. Pagination => 
+??????????????????
+
+User details bug fix(reset userDetails state user obj when user logout by adding RESET Constant,Action,Reducer)
+
+Update Profile(user data) => frontend (ProfileScreen Component,Constants, Actions,Reducers,Store) => connected with backend working functionality
+
+ProfileScreen & Get User Details => ProfileScreen,Constants,Actions,Reducers,Store
+????????????????????????????????????????????????????????????????????????
+
+PayPal
+
+for paypal buttons in react=>
+	npm i react-paypal-button-v2 --force
+	
+	
+ISSUE? Payment had to be done 2 times in order to call 
+         dispatch(payOrder(orderId,paymentResult))
+1.we can try and use 
+// import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
+latest pkg for react paypal and see
+
+2.within current pkg we can remove paypal button after 1st time payment is done and add another button insted when that clicked that dispatch the action
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+Reactjs v6 has come with useNavigate instead of useHistory.
+
+=> firstly, you have to import it like this: import {useNavigate} from 'react-router-dom'.
+
+=> then you only can you use it under a react functional component like this:
+
+const navigate = useNavigate();
+
+=> And then which route you want to navigate, just put that route name like this:
+
+navigate("/about");
+
+example: if you want to navigate to the about page after clicking a button.Then you should put
+
+navigate("/about") under this onClick event:
+
+<button onClick = {()=>navigate("/about")}>go to about page
+---------------------------------------------------------------------------
+The preventDefault() method cancels the event if it is cancelable, meaning that the default action that belongs to the event will not occur.
+
+For example, this can be useful when:
+
+Clicking on a "Submit" button, prevent it from submitting a form
+Clicking on a link, prevent the link from following the URL
+----------------------------------------------------------------------------
+
+python manage.py startapp base
+python manage.py runserver
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py createsuperuser
+username:gautam@gmail.com
+password:gau@1234
+email:gautam@gmail.com
+
+chintan
+chi@1234
+---------------------------------------------------------------------------
